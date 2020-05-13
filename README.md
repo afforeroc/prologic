@@ -1,5 +1,5 @@
 # Prologic (Propositional Logic Interpreter)
-It's a interative interpreter of binary truth functions: conjunction, disjunction, material implication and biconditional.<br>
+It's an interative interpreter of binary truth functions: conjunction, disjunction, material implication and biconditional.<br>
 Here you can learn how to configure and run the app.
 
 ## Tutorial
