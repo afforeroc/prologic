@@ -1,5 +1,9 @@
-howCode Python Calculator Source Code
--------------------------------------
-This is the source code of the howCode Python Calculator series. The playlist for the series can be found here [http://howco.de/calc-playlist](http://howco.de/calc-playlist).
+# Prologic
+Propositional logic interpreter where you can learn and practice commonly logical connectives:
+* Conjunction (and): &
+* Disjunction (or): ∨
+* Material implication (if...then): ->
+* Biconditional (if and only if): <->
 
-If you have any questions please email francis@howcode.org.
+## Reference links
+* [Calc of howCodeORG](https://github.com/howCodeORG/Calc)

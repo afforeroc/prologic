@@ -1,0 +1,300 @@
+Created by PLY version 3.11 (http://www.dabeaz.com/ply)
+
+Grammar
+
+Rule 0     S' -> calc
+Rule 1     calc -> expression
+Rule 2     calc -> var_assign
+Rule 3     calc -> empty
+Rule 4     var_assign -> NAME EQUALS expression
+Rule 5     expression -> expression COND expression
+Rule 6     expression -> expression BICOND expression
+Rule 7     expression -> expression AND expression
+Rule 8     expression -> expression OR expression
+Rule 9     expression -> BOOL
+Rule 10    expression -> NAME
+Rule 11    empty -> <empty>
+
+Terminals, with rules where they appear
+
+AND                  : 7
+BICOND               : 6
+BOOL                 : 9
+COND                 : 5
+EQUALS               : 4
+NAME                 : 4 10
+OR                   : 8
+error                : 
+
+Nonterminals, with rules where they appear
+
+calc                 : 0
+empty                : 3
+expression           : 1 4 5 5 6 6 7 7 8 8
+var_assign           : 2
+
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . calc
+    (1) calc -> . expression
+    (2) calc -> . var_assign
+    (3) calc -> . empty
+    (5) expression -> . expression COND expression
+    (6) expression -> . expression BICOND expression
+    (7) expression -> . expression AND expression
+    (8) expression -> . expression OR expression
+    (9) expression -> . BOOL
+    (10) expression -> . NAME
+    (4) var_assign -> . NAME EQUALS expression
+    (11) empty -> .
+
+    BOOL            shift and go to state 5
+    NAME            shift and go to state 6
+    $end            reduce using rule 11 (empty -> .)
+
+    calc                           shift and go to state 1
+    expression                     shift and go to state 2
+    var_assign                     shift and go to state 3
+    empty                          shift and go to state 4
+
+state 1
+
+    (0) S' -> calc .
+
+
+
+state 2
+
+    (1) calc -> expression .
+    (5) expression -> expression . COND expression
+    (6) expression -> expression . BICOND expression
+    (7) expression -> expression . AND expression
+    (8) expression -> expression . OR expression
+
+    $end            reduce using rule 1 (calc -> expression .)
+    COND            shift and go to state 7
+    BICOND          shift and go to state 8
+    AND             shift and go to state 9
+    OR              shift and go to state 10
+
+
+state 3
+
+    (2) calc -> var_assign .
+
+    $end            reduce using rule 2 (calc -> var_assign .)
+
+
+state 4
+
+    (3) calc -> empty .
+
+    $end            reduce using rule 3 (calc -> empty .)
+
+
+state 5
+
+    (9) expression -> BOOL .
+
+    COND            reduce using rule 9 (expression -> BOOL .)
+    BICOND          reduce using rule 9 (expression -> BOOL .)
+    AND             reduce using rule 9 (expression -> BOOL .)
+    OR              reduce using rule 9 (expression -> BOOL .)
+    $end            reduce using rule 9 (expression -> BOOL .)
+
+
+state 6
+
+    (10) expression -> NAME .
+    (4) var_assign -> NAME . EQUALS expression
+
+    COND            reduce using rule 10 (expression -> NAME .)
+    BICOND          reduce using rule 10 (expression -> NAME .)
+    AND             reduce using rule 10 (expression -> NAME .)
+    OR              reduce using rule 10 (expression -> NAME .)
+    $end            reduce using rule 10 (expression -> NAME .)
+    EQUALS          shift and go to state 11
+
+
+state 7
+
+    (5) expression -> expression COND . expression
+    (5) expression -> . expression COND expression
+    (6) expression -> . expression BICOND expression
+    (7) expression -> . expression AND expression
+    (8) expression -> . expression OR expression
+    (9) expression -> . BOOL
+    (10) expression -> . NAME
+
+    BOOL            shift and go to state 5
+    NAME            shift and go to state 13
+
+    expression                     shift and go to state 12
+
+state 8
+
+    (6) expression -> expression BICOND . expression
+    (5) expression -> . expression COND expression
+    (6) expression -> . expression BICOND expression
+    (7) expression -> . expression AND expression
+    (8) expression -> . expression OR expression
+    (9) expression -> . BOOL
+    (10) expression -> . NAME
+
+    BOOL            shift and go to state 5
+    NAME            shift and go to state 13
+
+    expression                     shift and go to state 14
+
+state 9
+
+    (7) expression -> expression AND . expression
+    (5) expression -> . expression COND expression
+    (6) expression -> . expression BICOND expression
+    (7) expression -> . expression AND expression
+    (8) expression -> . expression OR expression
+    (9) expression -> . BOOL
+    (10) expression -> . NAME
+
+    BOOL            shift and go to state 5
+    NAME            shift and go to state 13
+
+    expression                     shift and go to state 15
+
+state 10
+
+    (8) expression -> expression OR . expression
+    (5) expression -> . expression COND expression
+    (6) expression -> . expression BICOND expression
+    (7) expression -> . expression AND expression
+    (8) expression -> . expression OR expression
+    (9) expression -> . BOOL
+    (10) expression -> . NAME
+
+    BOOL            shift and go to state 5
+    NAME            shift and go to state 13
+
+    expression                     shift and go to state 16
+
+state 11
+
+    (4) var_assign -> NAME EQUALS . expression
+    (5) expression -> . expression COND expression
+    (6) expression -> . expression BICOND expression
+    (7) expression -> . expression AND expression
+    (8) expression -> . expression OR expression
+    (9) expression -> . BOOL
+    (10) expression -> . NAME
+
+    BOOL            shift and go to state 5
+    NAME            shift and go to state 13
+
+    expression                     shift and go to state 17
+
+state 12
+
+    (5) expression -> expression COND expression .
+    (5) expression -> expression . COND expression
+    (6) expression -> expression . BICOND expression
+    (7) expression -> expression . AND expression
+    (8) expression -> expression . OR expression
+
+    COND            reduce using rule 5 (expression -> expression COND expression .)
+    BICOND          reduce using rule 5 (expression -> expression COND expression .)
+    AND             reduce using rule 5 (expression -> expression COND expression .)
+    OR              reduce using rule 5 (expression -> expression COND expression .)
+    $end            reduce using rule 5 (expression -> expression COND expression .)
+
+  ! COND            [ shift and go to state 7 ]
+  ! BICOND          [ shift and go to state 8 ]
+  ! AND             [ shift and go to state 9 ]
+  ! OR              [ shift and go to state 10 ]
+
+
+state 13
+
+    (10) expression -> NAME .
+
+    COND            reduce using rule 10 (expression -> NAME .)
+    BICOND          reduce using rule 10 (expression -> NAME .)
+    AND             reduce using rule 10 (expression -> NAME .)
+    OR              reduce using rule 10 (expression -> NAME .)
+    $end            reduce using rule 10 (expression -> NAME .)
+
+
+state 14
+
+    (6) expression -> expression BICOND expression .
+    (5) expression -> expression . COND expression
+    (6) expression -> expression . BICOND expression
+    (7) expression -> expression . AND expression
+    (8) expression -> expression . OR expression
+
+    COND            reduce using rule 6 (expression -> expression BICOND expression .)
+    BICOND          reduce using rule 6 (expression -> expression BICOND expression .)
+    AND             reduce using rule 6 (expression -> expression BICOND expression .)
+    OR              reduce using rule 6 (expression -> expression BICOND expression .)
+    $end            reduce using rule 6 (expression -> expression BICOND expression .)
+
+  ! COND            [ shift and go to state 7 ]
+  ! BICOND          [ shift and go to state 8 ]
+  ! AND             [ shift and go to state 9 ]
+  ! OR              [ shift and go to state 10 ]
+
+
+state 15
+
+    (7) expression -> expression AND expression .
+    (5) expression -> expression . COND expression
+    (6) expression -> expression . BICOND expression
+    (7) expression -> expression . AND expression
+    (8) expression -> expression . OR expression
+
+    AND             reduce using rule 7 (expression -> expression AND expression .)
+    OR              reduce using rule 7 (expression -> expression AND expression .)
+    $end            reduce using rule 7 (expression -> expression AND expression .)
+    COND            shift and go to state 7
+    BICOND          shift and go to state 8
+
+  ! COND            [ reduce using rule 7 (expression -> expression AND expression .) ]
+  ! BICOND          [ reduce using rule 7 (expression -> expression AND expression .) ]
+  ! AND             [ shift and go to state 9 ]
+  ! OR              [ shift and go to state 10 ]
+
+
+state 16
+
+    (8) expression -> expression OR expression .
+    (5) expression -> expression . COND expression
+    (6) expression -> expression . BICOND expression
+    (7) expression -> expression . AND expression
+    (8) expression -> expression . OR expression
+
+    AND             reduce using rule 8 (expression -> expression OR expression .)
+    OR              reduce using rule 8 (expression -> expression OR expression .)
+    $end            reduce using rule 8 (expression -> expression OR expression .)
+    COND            shift and go to state 7
+    BICOND          shift and go to state 8
+
+  ! COND            [ reduce using rule 8 (expression -> expression OR expression .) ]
+  ! BICOND          [ reduce using rule 8 (expression -> expression OR expression .) ]
+  ! AND             [ shift and go to state 9 ]
+  ! OR              [ shift and go to state 10 ]
+
+
+state 17
+
+    (4) var_assign -> NAME EQUALS expression .
+    (5) expression -> expression . COND expression
+    (6) expression -> expression . BICOND expression
+    (7) expression -> expression . AND expression
+    (8) expression -> expression . OR expression
+
+    $end            reduce using rule 4 (var_assign -> NAME EQUALS expression .)
+    COND            shift and go to state 7
+    BICOND          shift and go to state 8
+    AND             shift and go to state 9
+    OR              shift and go to state 10
+
