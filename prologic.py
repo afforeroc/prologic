@@ -4,23 +4,20 @@ import sys
 
 # Create a list to hold all of the token names
 tokens = [
-
-    'INT',
-    'FLOAT',
+    'BOOL',
     'NAME',
-    'PLUS',
-    'MINUS',
-    'DIVIDE',
-    'MULTIPLY',
+    'AND',
+    'OR',
+    'COND',
+    'BICOND',
     'EQUALS'
-
 ]
 
 # Use regular expressions to define what each token is
-t_PLUS = r'\+'
-t_MINUS = r'\-'
-t_MULTIPLY = r'\*'
-t_DIVIDE = r'\/'
+t_AND = r'\&'
+t_OR = r'v'
+t_COND = r'\->'
+t_BICOND = r'\<->'
 t_EQUALS = r'\='
 
 # Ply's special t_ignore variable allows us to define characters the lexer will ignore.
@@ -29,23 +26,21 @@ t_ignore = r' '
 
 # More complicated tokens, such as tokens that are more than 1 character in length
 # are defined using functions.
-# A float is 1 or more numbers followed by a dot (.) followed by 1 or more numbers again.
-def t_FLOAT(t):
-    r'\d+\.\d+'
-    t.value = float(t.value)
-    return t
 
 # An int is 1 or more numbers.
-def t_INT(t):
-    r'\d+'
-    t.value = int(t.value)
+def t_BOOL(t):
+    r'(F|T)'
+    if t.value == 'F':
+        t.value = False
+    else:
+        t.value = True
     return t
 
 # A NAME is a variable name. A variable can be 1 or more characters in length.
 # The first character must be in the ranges a-z A-Z or be an underscore.
 # Any character following the first character can be a-z A-Z 0-9 or an underscore.
 def t_NAME(t):
-    r'[a-zA-Z_][a-zA-Z_0-9]*'
+    r'(?!(v|F|T))[a-zA-Z_][a-zA-Z_0-9]*'
     t.type = 'NAME'
     return t
 
@@ -60,10 +55,8 @@ lexer = lex.lex()
 # Ensure our parser understands the correct order of operations.
 # The precedence variable is a special Ply variable.
 precedence = (
-
-    ('left', 'PLUS', 'MINUS'),
-    ('left', 'MULTIPLY', 'DIVIDE')
-
+    ('left', 'AND', 'OR'),
+    ('left', 'COND', 'BICOND')
 )
 
 # Define our grammar. We allow expressions, var_assign's and empty's.
@@ -85,18 +78,17 @@ def p_var_assign(p):
 # Expressions are recursive.
 def p_expression(p):
     '''
-    expression : expression MULTIPLY expression
-               | expression DIVIDE expression
-               | expression PLUS expression
-               | expression MINUS expression
+    expression : expression COND expression
+               | expression BICOND expression
+               | expression AND expression
+               | expression OR expression
     '''
     # Build our tree.
     p[0] = (p[2], p[1], p[3])
 
-def p_expression_int_float(p):
+def p_expression_bool(p):
     '''
-    expression : INT
-               | FLOAT
+    expression : BOOL
     '''
     p[0] = p[1]
 
@@ -110,12 +102,21 @@ def p_expression_var(p):
 # p_error is another special Ply function.
 def p_error(p):
     print("Syntax error found!")
+    #exit(0)
 
 def p_empty(p):
     '''
     empty :
     '''
     p[0] = None
+
+# My map
+def boolToChar(boolean):
+    if boolean == True:
+        return 'T'
+    else:
+        return 'F'
+
 
 # Build the parser
 parser = yacc.yacc()
@@ -125,14 +126,15 @@ env = {}
 def run(p):
     global env
     if type(p) == tuple:
-        if p[0] == '+':
-            return run(p[1]) + run(p[2])
-        elif p[0] == '-':
-            return run(p[1]) - run(p[2])
-        elif p[0] == '*':
-            return run(p[1]) * run(p[2])
-        elif p[0] == '/':
-            return run(p[1]) / run(p[2])
+        if p[0] == '&':
+            return boolToChar(run(p[1]) and run(p[2]))
+            #return int(run(p[1]) and run(p[2]))
+        elif p[0] == 'v':
+            return boolToChar(run(p[1]) or run(p[2]))
+        elif p[0] == '->':
+            return boolToChar(not run(p[1]) or run(p[2]))
+        elif p[0] == '<->':
+            return boolToChar((not run(p[1]) or run(p[2])) and (not run(p[2]) or run(p[1])))
         elif p[0] == '=':
             env[p[1]] = run(p[2])
             return ''
@@ -151,3 +153,4 @@ while True:
     except EOFError:
         break
     parser.parse(s)
+    
