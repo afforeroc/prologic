@@ -15,7 +15,7 @@ tokens = [
 
 # Use regular expressions to define what each token is
 t_AND = r'\&'
-t_OR = r'v'
+t_OR = r'\|'
 t_COND = r'\->'
 t_BICOND = r'\<->'
 t_EQUALS = r'\='
@@ -40,7 +40,7 @@ def t_BOOL(t):
 # The first character must be in the ranges a-z A-Z or be an underscore.
 # Any character following the first character can be a-z A-Z 0-9 or an underscore.
 def t_NAME(t):
-    r'(?!(v|F|T))[a-zA-Z_][a-zA-Z_0-9]*'
+    r'(?!(F|T))[a-zA-Z_][a-zA-Z_0-9]*'
     t.type = 'NAME'
     return t
 
@@ -54,9 +54,12 @@ lexer = lex.lex()
 
 # Ensure our parser understands the correct order of operations.
 # The precedence variable is a special Ply variable.
+
 precedence = (
-    ('left', 'AND', 'OR'),
-    ('left', 'COND', 'BICOND')
+    ('left', 'BICOND'),
+    ('left', 'COND'),
+    ('left', 'OR'),
+    ('left', 'AND')
 )
 
 # Define our grammar. We allow expressions, var_assign's and empty's.
@@ -66,7 +69,7 @@ def p_calc(p):
          | var_assign
          | empty
     '''
-    print(run(p[1]))
+    print(boolToChar(run(p[1])))
 
 def p_var_assign(p):
     '''
@@ -78,10 +81,10 @@ def p_var_assign(p):
 # Expressions are recursive.
 def p_expression(p):
     '''
-    expression : expression COND expression
-               | expression BICOND expression
-               | expression AND expression
+    expression : expression BICOND expression
+               | expression COND expression
                | expression OR expression
+               | expression AND expression
     '''
     # Build our tree.
     p[0] = (p[2], p[1], p[3])
@@ -117,7 +120,6 @@ def boolToChar(boolean):
     else:
         return 'F'
 
-
 # Build the parser
 parser = yacc.yacc()
 # Create the environment upon which we will store and retreive variables from.
@@ -127,14 +129,13 @@ def run(p):
     global env
     if type(p) == tuple:
         if p[0] == '&':
-            return boolToChar(run(p[1]) and run(p[2]))
-            #return int(run(p[1]) and run(p[2]))
-        elif p[0] == 'v':
-            return boolToChar(run(p[1]) or run(p[2]))
+            return run(p[1]) and run(p[2])
+        elif p[0] == '|':
+            return run(p[1]) or run(p[2])
         elif p[0] == '->':
-            return boolToChar(not run(p[1]) or run(p[2]))
+            return not run(p[1]) or run(p[2])
         elif p[0] == '<->':
-            return boolToChar((not run(p[1]) or run(p[2])) and (not run(p[2]) or run(p[1])))
+            return (not run(p[1]) or run(p[2])) and (not run(p[2]) or run(p[1]))
         elif p[0] == '=':
             env[p[1]] = run(p[2])
             return ''
@@ -153,4 +154,3 @@ while True:
     except EOFError:
         break
     parser.parse(s)
-    
