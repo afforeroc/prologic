@@ -62,6 +62,13 @@ precedence = (
     ('left', 'AND')
 )
 
+# My function to convert a boolean element to their char representation
+def boolToChar(boolean):
+    if boolean == True:
+        return 'T'
+    else:
+        return 'F'
+
 # Define our grammar. We allow expressions, var_assign's and empty's.
 def p_calc(p):
     '''
@@ -112,13 +119,6 @@ def p_empty(p):
     empty :
     '''
     p[0] = None
-
-# My map
-def boolToChar(boolean):
-    if boolean == True:
-        return 'T'
-    else:
-        return 'F'
 
 # Build the parser
 parser = yacc.yacc()
