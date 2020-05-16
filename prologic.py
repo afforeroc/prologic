@@ -6,6 +6,7 @@ import sys
 tokens = [
     'BOOL',
     'NAME',
+    'NEG',
     'AND',
     'OR',
     'COND',
@@ -14,6 +15,7 @@ tokens = [
 ]
 
 # Use regular expressions to define what each token is
+t_NEG = r'\~'
 t_AND = r'\&'
 t_OR = r'\|'
 t_COND = r'\->'
@@ -54,12 +56,12 @@ lexer = lex.lex()
 
 # Ensure our parser understands the correct order of operations.
 # The precedence variable is a special Ply variable.
-
 precedence = (
     ('left', 'BICOND'),
     ('left', 'COND'),
     ('left', 'OR'),
-    ('left', 'AND')
+    ('left', 'AND'),
+    ('left', 'NEG')
 )
 
 # My function to convert a boolean element to their char representation
@@ -108,11 +110,16 @@ def p_expression_var(p):
     '''
     p[0] = ('var', p[1])
 
+def p_expression_negation(p):
+    '''
+    expression : NEG expression
+    '''
+    p[0] = not p[2]
+
 # Output to the user that there is an error in the input as it doesn't conform to our grammar.
 # p_error is another special Ply function.
 def p_error(p):
     print("Syntax error found!")
-    #exit(0)
 
 def p_empty(p):
     '''
