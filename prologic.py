@@ -6,6 +6,8 @@ import sys
 tokens = [
     'BOOL',
     'NAME',
+    'LPAREN',
+    'RPAREN',
     'NEG',
     'AND',
     'OR',
@@ -15,6 +17,8 @@ tokens = [
 ]
 
 # Use regular expressions to define what each token is
+t_LPAREN = r'\('
+t_RPAREN = r'\)'
 t_NEG = r'\~'
 t_AND = r'\&'
 t_OR = r'\|'
@@ -61,7 +65,8 @@ precedence = (
     ('left', 'COND'),
     ('left', 'OR'),
     ('left', 'AND'),
-    ('left', 'NEG')
+    ('left', 'NEG'),
+    ('left', 'LPAREN','RPAREN')
 )
 
 # My function to convert a boolean element to their char representation
@@ -115,6 +120,12 @@ def p_expression_negation(p):
     expression : NEG expression
     '''
     p[0] = not p[2]
+
+def p_expression_parentesis(p):
+    '''
+    expression : LPAREN expression RPAREN
+    '''
+    p[0] = p[2]
 
 # Output to the user that there is an error in the input as it doesn't conform to our grammar.
 # p_error is another special Ply function.
