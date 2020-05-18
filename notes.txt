@@ -1,0 +1,4 @@
+It's necessary create two methods of evaluation:
+1. Evaluation using only T:True or F:False values without variables or similars.
+2. Symbolic evaluation using only Letters like P, Q, R, S, T, or whatever with purporse to create
+a tables of posibles evaluations.
